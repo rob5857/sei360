@@ -49,12 +49,12 @@
         }
 
         /* Scrollbar amigable */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
 
-        /* Estilo para el item activo del sidebar (Borde redondeado a la izquierda) */
+        /* Estilo para el item activo del sidebar */
         .nav-item-active {
             background-color: #FFE600;
             color: #111827 !important;
@@ -97,17 +97,26 @@
         }
     </style>
 </head>
-<body class="flex h-screen w-screen text-sm antialiased text-ikids-text">
+<body class="flex h-screen w-screen text-sm antialiased text-ikids-text relative">
+
+    <!-- Overlay oscuro para el Sidebar en móviles -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-ikids-text/50 z-40 hidden backdrop-blur-sm transition-opacity"></div>
 
     <!-- ==================== BARRA LATERAL (SIDEBAR) ==================== -->
-    <aside class="w-[260px] bg-ikids-sidebar flex flex-col justify-between z-20 flex-shrink-0 shadow-xl relative pl-4 py-6">
-        <div class="pr-4">
+    <aside id="main-sidebar" class="absolute lg:relative w-[260px] h-full bg-ikids-sidebar flex flex-col justify-between z-50 flex-shrink-0 shadow-2xl lg:shadow-xl pl-4 py-6 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="pr-4 overflow-y-auto hide-scroll">
+            
+            <!-- Botón cerrar móvil -->
+            <button onclick="toggleSidebar()" class="lg:hidden absolute top-4 right-4 text-white hover:text-yellow-400 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
             <!-- Logo Emulado -->
-            <div class="flex items-center justify-center mb-10 px-2 cursor-pointer" onclick="switchView('inicio')">
+            <div class="flex items-center justify-center mb-8 mt-2 lg:mt-0 px-2 cursor-pointer" onclick="switchView('inicio')">
                 <div class="bg-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 border-b-4 border-yellow-400">
                     <i class="fa-solid fa-owl text-3xl text-ikids-sidebar"></i>
                     <div>
-                        <h1 class="font-bold text-2xl leading-none text-red-500 tracking-tight">iKids<span class="text-ikids-sidebar">PR.com</span></h1>
+                        <h1 class="font-bold text-xl lg:text-2xl leading-none text-red-500 tracking-tight">iKids<span class="text-ikids-sidebar">PR.com</span></h1>
                         <div class="h-1.5 w-full bg-yellow-400 mt-1 rounded-full relative">
                             <div class="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-l-[6px] border-l-yellow-400 border-b-[4px] border-b-transparent"></div>
                         </div>
@@ -118,24 +127,24 @@
             <!-- Navegación Principal -->
             <nav class="space-y-1">
                 <!-- Item: Inicio (Constructor) -->
-                <button id="nav-inicio" onclick="switchView('inicio')" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/10 transition-colors rounded-l-full group relative">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors nav-icon-bg">
+                <button id="nav-inicio" onclick="switchView('inicio'); if(window.innerWidth < 1024) toggleSidebar();" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/10 transition-colors rounded-l-full group relative">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors nav-icon-bg shrink-0">
                         <i class="fa-solid fa-house text-white group-hover:text-white transition-colors nav-icon"></i>
                     </div>
                     <span class="font-medium text-[15px]">Inicio</span>
                 </button>
 
                 <!-- Item: Constructor de Salas -->
-                <button id="nav-constructor" onclick="switchView('inicio')" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors nav-icon-bg">
+                <button id="nav-constructor" onclick="switchView('inicio'); if(window.innerWidth < 1024) toggleSidebar();" class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 text-white hover:bg-white/10 transition-colors rounded-l-full group">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors nav-icon-bg shrink-0">
                         <i class="fa-solid fa-wand-magic-sparkles text-white transition-colors nav-icon"></i>
                     </div>
                     <span class="font-medium text-[15px] leading-tight text-left">Constructor de<br>Salas</span>
                 </button>
 
                 <!-- Item: Videos (Videoteca) - ACTIVO POR DEFECTO -->
-                <button id="nav-videos" onclick="switchView('videos')" class="nav-btn nav-item-active w-full flex items-center gap-4 px-4 py-3.5 transition-colors group">
-                    <div class="w-8 h-8 rounded-full bg-ikids-sidebar/10 flex items-center justify-center nav-icon-bg">
+                <button id="nav-videos" onclick="switchView('videos'); if(window.innerWidth < 1024) toggleSidebar();" class="nav-btn nav-item-active w-full flex items-center gap-4 px-4 py-3.5 transition-colors group">
+                    <div class="w-8 h-8 rounded-full bg-ikids-sidebar/10 flex items-center justify-center nav-icon-bg shrink-0">
                         <i class="fa-solid fa-play text-ikids-sidebar nav-icon"></i>
                     </div>
                     <span class="font-bold text-[15px]">Videos</span>
@@ -143,47 +152,47 @@
 
                 <!-- Otros elementos visuales del menú -->
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group mt-2">
-                    <div class="w-8 h-8 rounded-md bg-pink-500 flex items-center justify-center"><i class="fa-regular fa-file-pdf text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-pink-500 flex items-center justify-center shrink-0"><i class="fa-regular fa-file-pdf text-white"></i></div>
                     <span class="font-medium text-[15px]">Documentos</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-ikids-purpleLight flex items-center justify-center"><i class="fa-solid fa-chalkboard-user text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-ikids-purpleLight flex items-center justify-center shrink-0"><i class="fa-solid fa-chalkboard-user text-white"></i></div>
                     <span class="font-medium text-[15px]">Presentaciones</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-orange-400 flex items-center justify-center"><i class="fa-solid fa-puzzle-piece text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-orange-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-puzzle-piece text-white"></i></div>
                     <span class="font-medium text-[15px]">Actividades</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-yellow-400 flex items-center justify-center"><i class="fa-solid fa-clipboard-check text-ikids-sidebar"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-yellow-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-clipboard-check text-ikids-sidebar"></i></div>
                     <span class="font-medium text-[15px]">Evaluación</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-rose-400 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-rose-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-hand-holding-heart text-white"></i></div>
                     <span class="font-medium text-[15px] leading-tight text-left">Recursos de ayuda</span>
                 </button>
 
                 <div class="pt-2 mt-2 border-t border-white/10"></div>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-cyan-400 flex items-center justify-center"><i class="fa-solid fa-folder-open text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-cyan-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-folder-open text-white"></i></div>
                     <span class="font-medium text-[15px]">Mis Salas</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-yellow-500 flex items-center justify-center"><i class="fa-solid fa-award text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-yellow-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-award text-white"></i></div>
                     <span class="font-medium text-[15px]">Mis Certificados</span>
                 </button>
                 <button class="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 transition-colors rounded-l-full group">
-                    <div class="w-8 h-8 rounded-md bg-green-400 flex items-center justify-center"><i class="fa-solid fa-chart-simple text-white"></i></div>
+                    <div class="w-8 h-8 rounded-md bg-green-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-chart-simple text-white"></i></div>
                     <span class="font-medium text-[15px]">Panel de Impacto</span>
                 </button>
             </nav>
         </div>
 
         <!-- Jarvis Botón Inferior -->
-        <div class="pr-4 mt-4">
+        <div class="pr-4 mt-4 shrink-0 pb-4 lg:pb-0">
             <button class="w-full flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 transition-all shadow-lg text-white group cursor-pointer border-2 border-blue-300 relative overflow-hidden">
                 <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm text-2xl relative z-10">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm text-2xl relative z-10 shrink-0">
                     🤖
                 </div>
                 <div class="text-left relative z-10">
@@ -195,296 +204,307 @@
     </aside>
 
     <!-- ==================== ÁREA PRINCIPAL ==================== -->
-    <main class="flex-1 flex flex-col relative h-full w-full bg-ikids-bg">
+    <main class="flex-1 flex flex-col relative h-full w-full bg-ikids-bg overflow-hidden w-full lg:w-[calc(100%-260px)]">
 
-        <!-- ================= VISTA 1: VIDEOTECA EDUCATIVA (Por defecto) ================= -->
-        <div id="view-videos" class="block fade-in h-full flex flex-col overflow-hidden">
+        <!-- ================= VISTA 1: VIDEOTECA EDUCATIVA ================= -->
+        <div id="view-videos" class="block fade-in h-full flex flex-col overflow-hidden w-full">
             
             <!-- Header Videoteca -->
-            <header class="pt-8 px-8 pb-4 shrink-0 bg-white shadow-soft relative z-10 rounded-b-3xl">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-center gap-4">
-                        <!-- Icono animado (Avión de papel decorativo) -->
-                        <div class="absolute top-4 left-1/3 text-blue-400 text-3xl opacity-20 transform -rotate-12"><i class="fa-solid fa-paper-plane"></i></div>
-                        <div class="absolute top-10 right-1/4 text-yellow-400 text-2xl opacity-30 transform rotate-12"><i class="fa-solid fa-star"></i></div>
+            <header class="pt-6 lg:pt-8 px-4 sm:px-8 pb-4 shrink-0 bg-white shadow-soft relative z-10 rounded-b-3xl">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 lg:gap-4 w-full lg:w-auto">
+                        <!-- Botón Hamburger Mobile -->
+                        <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 rounded-xl bg-ikids-bg flex items-center justify-center text-ikids-sidebar shrink-0 shadow-sm border border-gray-200">
+                            <i class="fa-solid fa-bars text-lg"></i>
+                        </button>
 
-                        <div class="w-14 h-14 rounded-full bg-ikids-sidebar flex items-center justify-center shadow-lg text-white text-2xl shrink-0">
+                        <!-- Icono animado -->
+                        <div class="hidden md:block absolute top-4 left-1/3 text-blue-400 text-3xl opacity-20 transform -rotate-12 pointer-events-none"><i class="fa-solid fa-paper-plane"></i></div>
+                        <div class="hidden md:block absolute top-10 right-1/4 text-yellow-400 text-2xl opacity-30 transform rotate-12 pointer-events-none"><i class="fa-solid fa-star"></i></div>
+
+                        <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-ikids-sidebar flex items-center justify-center shadow-lg text-white text-xl lg:text-2xl shrink-0">
                             <i class="fa-solid fa-play ml-1"></i>
                         </div>
-                        <div>
-                            <h2 class="text-4xl font-extrabold text-ikids-sidebar tracking-tight flex items-center gap-3">
-                                Videoteca Educativa
-                                <i class="fa-solid fa-paper-plane text-blue-400 text-2xl transform -rotate-12"></i>
+                        <div class="flex-1">
+                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-ikids-sidebar tracking-tight flex items-center gap-2">
+                                Videoteca
+                                <i class="fa-solid fa-paper-plane text-blue-400 text-xl lg:text-2xl transform -rotate-12 hidden sm:inline-block"></i>
                             </h2>
-                            <p class="text-blue-500 font-medium text-lg mt-0.5">Aprende, explora y diviértete con videos increíbles</p>
+                            <p class="text-blue-500 font-medium text-xs sm:text-sm lg:text-lg mt-0.5 leading-tight">Aprende, explora y diviértete con videos</p>
                         </div>
                     </div>
                     
-                    <div class="flex flex-col gap-2">
-                        <button class="bg-ikids-sidebar text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-ikids-purple transition-colors flex items-center gap-2 justify-center">
-                            <i class="fa-solid fa-house"></i> Menú Principal
+                    <div class="flex flex-wrap lg:flex-col xl:flex-row gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                        <button onclick="switchView('inicio')" class="flex-1 lg:flex-none bg-ikids-sidebar text-white px-4 lg:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-md hover:bg-ikids-purple transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-house"></i> Menú
                         </button>
-                        <button onclick="switchView('inicio')" class="bg-ikids-green text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-emerald-600 transition-colors flex items-center gap-2 justify-center">
+                        <button onclick="switchView('inicio')" class="flex-1 lg:flex-none bg-ikids-green text-white px-4 lg:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-md hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-arrow-left"></i> Volver al Constructor
                         </button>
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <h3 class="text-xl font-bold text-ikids-sidebar flex items-center gap-2">
+                <div class="mt-4 hidden sm:block">
+                    <h3 class="text-lg lg:text-xl font-bold text-ikids-sidebar flex items-center gap-2">
                         <i class="fa-solid fa-circle-play"></i> Sala de Videos
                     </h3>
-                    <p class="text-gray-500 font-medium text-sm">Explora nuestra biblioteca de videos educativos por tema.</p>
+                    <p class="text-gray-500 font-medium text-xs sm:text-sm">Explora nuestra biblioteca de videos educativos por tema.</p>
                 </div>
 
                 <!-- Tarjetas de Estadísticas -->
-                <div class="grid grid-cols-4 gap-4 mt-4">
-                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-video"></i></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-4 overflow-y-auto max-h-32 sm:max-h-none pr-1 sm:pr-0 pb-1 sm:pb-0">
+                    <div class="bg-white border border-gray-100 rounded-2xl p-3 lg:p-4 flex items-center gap-3 lg:gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-lg lg:text-xl shrink-0"><i class="fa-solid fa-video"></i></div>
                         <div>
-                            <p class="text-xs text-gray-500 font-medium">Total de Videos</p>
-                            <p class="text-2xl font-bold text-ikids-sidebar leading-none mt-1">28 <span class="text-[10px] font-normal text-gray-400">en biblioteca</span></p>
+                            <p class="text-[10px] lg:text-xs text-gray-500 font-medium leading-none">Total de Videos</p>
+                            <p class="text-xl lg:text-2xl font-bold text-ikids-sidebar leading-none mt-1">28 <span class="text-[9px] lg:text-[10px] font-normal text-gray-400">en biblioteca</span></p>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-full bg-green-100 text-ikids-green flex items-center justify-center text-xl"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="bg-white border border-gray-100 rounded-2xl p-3 lg:p-4 flex items-center gap-3 lg:gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-green-100 text-ikids-green flex items-center justify-center text-lg lg:text-xl shrink-0"><i class="fa-solid fa-wifi"></i></div>
                         <div>
-                            <p class="text-xs text-gray-500 font-medium">Disponibles Offline</p>
-                            <p class="text-2xl font-bold text-ikids-sidebar leading-none mt-1">21 <span class="text-[10px] font-normal text-gray-400">(75%)</span></p>
+                            <p class="text-[10px] lg:text-xs text-gray-500 font-medium leading-none">Disponibles Offline</p>
+                            <p class="text-xl lg:text-2xl font-bold text-ikids-sidebar leading-none mt-1">21 <span class="text-[9px] lg:text-[10px] font-normal text-gray-400">(75%)</span></p>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    <div class="bg-white border border-gray-100 rounded-2xl p-3 lg:p-4 flex items-center gap-3 lg:gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-lg lg:text-xl shrink-0"><i class="fa-solid fa-users"></i></div>
                         <div>
-                            <p class="text-xs text-gray-500 font-medium">Para Niños</p>
-                            <p class="text-2xl font-bold text-ikids-sidebar leading-none mt-1">14 <span class="text-[10px] font-normal text-gray-400">videos</span></p>
+                            <p class="text-[10px] lg:text-xs text-gray-500 font-medium leading-none">Para Niños</p>
+                            <p class="text-xl lg:text-2xl font-bold text-ikids-sidebar leading-none mt-1">14 <span class="text-[9px] lg:text-[10px] font-normal text-gray-400">videos</span></p>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center text-xl"><i class="fa-regular fa-clock"></i></div>
+                    <div class="bg-white border border-gray-100 rounded-2xl p-3 lg:p-4 flex items-center gap-3 lg:gap-4 shadow-sm hover:shadow-md transition-shadow hidden sm:flex">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center text-lg lg:text-xl shrink-0"><i class="fa-regular fa-clock"></i></div>
                         <div>
-                            <p class="text-xs text-gray-500 font-medium">Duración Promedio</p>
-                            <p class="text-2xl font-bold text-ikids-sidebar leading-none mt-1">8 min <span class="text-[10px] font-normal text-gray-400">por video</span></p>
+                            <p class="text-[10px] lg:text-xs text-gray-500 font-medium leading-none">Duración Promedio</p>
+                            <p class="text-xl lg:text-2xl font-bold text-ikids-sidebar leading-none mt-1">8 min <span class="text-[9px] lg:text-[10px] font-normal text-gray-400">por video</span></p>
                         </div>
                     </div>
                 </div>
             </header>
 
             <!-- Scrollable Content Area -->
-            <div class="flex-1 overflow-y-auto p-8 relative flex flex-col">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-8 relative flex flex-col w-full">
                 
                 <!-- Buscador y Filtros -->
-                <div class="flex items-center gap-4 mb-6">
+                <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 lg:gap-4 mb-4 sm:mb-6">
                     <div class="relative flex-1 bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden group focus-within:border-ikids-purple transition-colors">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-magnifying-glass text-gray-400 group-focus-within:text-ikids-purple"></i>
                         </div>
-                        <input type="text" id="search-videos" oninput="filterVideos('Todos')" class="w-full py-3 pl-11 pr-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none bg-transparent font-medium" placeholder="Buscar videos por tema...">
+                        <input type="text" id="search-videos" oninput="filterVideos('Todos')" class="w-full py-3 pl-11 pr-4 text-xs sm:text-sm text-gray-700 placeholder-gray-400 focus:outline-none bg-transparent font-medium" placeholder="Buscar videos...">
                     </div>
-                    <button class="bg-blue-500 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-blue-600 transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-sliders"></i> Filtros
-                    </button>
-                    <div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-200">
-                        <span class="text-sm font-medium text-gray-500">Ordenar por:</span>
-                        <select class="text-sm font-bold text-ikids-sidebar outline-none bg-transparent cursor-pointer">
-                            <option>Más recientes</option>
-                            <option>Populares</option>
-                        </select>
+                    
+                    <div class="flex items-center gap-2">
+                        <button class="flex-1 sm:flex-none bg-blue-500 text-white px-4 sm:px-6 py-3 rounded-full font-semibold shadow-md hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 text-xs sm:text-sm">
+                            <i class="fa-solid fa-sliders"></i> <span class="hidden sm:inline">Filtros</span>
+                        </button>
+                        <div class="flex-1 sm:flex-none flex items-center justify-between gap-2 bg-white px-3 sm:px-4 py-2.5 rounded-full shadow-sm border border-gray-200">
+                            <span class="text-xs sm:text-sm font-medium text-gray-500 hidden sm:inline">Ordenar:</span>
+                            <select class="text-xs sm:text-sm font-bold text-ikids-sidebar outline-none bg-transparent cursor-pointer w-full sm:w-auto">
+                                <option>Más recientes</option>
+                                <option>Populares</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Categorías (Pills) -->
-                <div class="flex items-center gap-3 overflow-x-auto hide-scroll pb-2 mb-6">
-                    <button onclick="filterVideos('Todos')" class="cat-pill active shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-ikids-sidebar text-white shadow-md transition-all flex items-center gap-2 border-2 border-transparent">
+                <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto hide-scroll pb-2 mb-4 sm:mb-6 w-full snap-x">
+                    <button onclick="filterVideos('Todos')" class="cat-pill active shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-ikids-sidebar text-white shadow-md transition-all flex items-center gap-2 border-2 border-transparent snap-start">
                         <i class="fa-regular fa-circle"></i> Todos
                     </button>
-                    <button onclick="filterVideos('Ciberseguridad')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-purple-300 hover:text-purple-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-purple-500 text-lg">🛡️</span> Ciberseguridad
+                    <button onclick="filterVideos('Ciberseguridad')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-purple-300 hover:text-purple-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-purple-500 sm:text-lg">🛡️</span> Ciberseguridad
                     </button>
-                    <button onclick="filterVideos('Finanzas')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-pink-300 hover:text-pink-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-pink-500 text-lg">🐷</span> Finanzas
+                    <button onclick="filterVideos('Finanzas')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-pink-300 hover:text-pink-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-pink-500 sm:text-lg">🐷</span> Finanzas
                     </button>
-                    <button onclick="filterVideos('Ciencia')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-green-300 hover:text-green-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-green-500 text-lg">🔬</span> Ciencia
+                    <button onclick="filterVideos('Ciencia')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-green-300 hover:text-green-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-green-500 sm:text-lg">🔬</span> Ciencia
                     </button>
-                    <button onclick="filterVideos('Valores')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-orange-500 text-lg">🧡</span> Valores
+                    <button onclick="filterVideos('Valores')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-orange-500 sm:text-lg">🧡</span> Valores
                     </button>
-                    <button onclick="filterVideos('Robótica')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-blue-500 text-lg">🤖</span> Robótica
+                    <button onclick="filterVideos('Robótica')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-blue-500 sm:text-lg">🤖</span> Robótica
                     </button>
-                    <button onclick="filterVideos('Salud')" class="cat-pill shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 border border-gray-200 hover:border-red-300 hover:text-red-600 shadow-sm transition-all flex items-center gap-2">
-                        <span class="text-red-500 text-lg">💖</span> Salud
+                    <button onclick="filterVideos('Salud')" class="cat-pill shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs sm:text-sm bg-white text-gray-600 border border-gray-200 hover:border-red-300 hover:text-red-600 shadow-sm transition-all flex items-center gap-2 snap-start">
+                        <span class="text-red-500 sm:text-lg">💖</span> Salud
                     </button>
                 </div>
 
                 <!-- Grilla de Videos -->
-                <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5 mb-8">
+                <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 mb-8 w-full">
                     <!-- Dinámico via JS -->
                 </div>
 
                 <!-- Paginación Simple -->
-                <div class="flex items-center justify-center gap-2 mt-auto">
-                    <button class="w-8 h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center hover:bg-ikids-purple transition-colors"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <button class="w-8 h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center font-bold text-sm">1</button>
-                    <button class="w-8 h-8 rounded-lg bg-white text-ikids-sidebar border border-gray-200 flex items-center justify-center font-bold text-sm hover:bg-gray-50 transition-colors">2</button>
-                    <button class="w-8 h-8 rounded-lg bg-white text-ikids-sidebar border border-gray-200 flex items-center justify-center font-bold text-sm hover:bg-gray-50 transition-colors">3</button>
-                    <button class="w-8 h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center hover:bg-ikids-purple transition-colors"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                <div class="flex items-center justify-center gap-1.5 sm:gap-2 mt-auto pt-4 pb-2">
+                    <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center hover:bg-ikids-purple transition-colors"><i class="fa-solid fa-chevron-left text-[10px] sm:text-xs"></i></button>
+                    <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center font-bold text-xs sm:text-sm">1</button>
+                    <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white text-ikids-sidebar border border-gray-200 flex items-center justify-center font-bold text-xs sm:text-sm hover:bg-gray-50 transition-colors">2</button>
+                    <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white text-ikids-sidebar border border-gray-200 flex items-center justify-center font-bold text-xs sm:text-sm hover:bg-gray-50 transition-colors">3</button>
+                    <button class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-ikids-sidebar text-white flex items-center justify-center hover:bg-ikids-purple transition-colors"><i class="fa-solid fa-chevron-right text-[10px] sm:text-xs"></i></button>
                 </div>
             </div>
 
             <!-- Bottom Banner Footer -->
-            <div class="bg-ikids-sidebar mt-auto shrink-0 py-3 px-8 flex items-center justify-between rounded-t-2xl mx-4 mb-0 relative overflow-hidden shadow-[0_-5px_20px_rgba(75,26,150,0.2)]">
+            <div class="bg-ikids-sidebar mt-auto shrink-0 py-3 lg:py-3 px-4 sm:px-8 flex flex-col md:flex-row items-center justify-between rounded-t-2xl mx-2 sm:mx-4 mb-0 relative overflow-hidden shadow-[0_-5px_20px_rgba(75,26,150,0.2)] gap-4 md:gap-0">
                 <!-- Efecto visual -->
-                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-white/10 to-transparent"></div>
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-white/10 to-transparent pointer-events-none"></div>
                 
-                <div class="flex items-center gap-4 z-10">
-                    <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-3xl border border-white/30 backdrop-blur-sm">🧠</div>
-                    <div>
-                        <p class="text-blue-200 text-xs font-medium">Cada video te acerca a un nuevo conocimiento.</p>
-                        <p class="text-yellow-400 font-extrabold text-lg">¡Aprende hoy, construye tu futuro!</p>
+                <div class="flex items-center gap-3 sm:gap-4 z-10 w-full md:w-auto justify-center md:justify-start">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl sm:text-3xl border border-white/30 backdrop-blur-sm shrink-0">🧠</div>
+                    <div class="text-center md:text-left">
+                        <p class="text-blue-200 text-[10px] sm:text-xs font-medium">Cada video te acerca a un nuevo conocimiento.</p>
+                        <p class="text-yellow-400 font-extrabold text-sm sm:text-lg leading-tight">¡Aprende hoy, construye tu futuro!</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-6 z-10">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved text-yellow-400 text-xl"></i>
-                        <span class="text-white text-xs font-semibold leading-tight">Contenido seguro<br>y educativo</span>
+                <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 sm:gap-6 z-10 w-full md:w-auto">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <i class="fa-solid fa-shield-halved text-yellow-400 text-lg sm:text-xl"></i>
+                        <span class="text-white text-[10px] sm:text-xs font-semibold leading-tight text-left">Contenido seguro<br>y educativo</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-medal text-blue-400 text-xl"></i>
-                        <span class="text-white text-xs font-semibold leading-tight">Aprobado por<br>expertos</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <i class="fa-solid fa-medal text-blue-400 text-lg sm:text-xl"></i>
+                        <span class="text-white text-[10px] sm:text-xs font-semibold leading-tight text-left">Aprobado por<br>expertos</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-child-reaching text-orange-400 text-xl"></i>
-                        <span class="text-white text-xs font-semibold leading-tight">Pensado para<br>niños y jóvenes</span>
+                    <div class="hidden sm:flex items-center gap-1.5 sm:gap-2">
+                        <i class="fa-solid fa-child-reaching text-orange-400 text-lg sm:text-xl"></i>
+                        <span class="text-white text-[10px] sm:text-xs font-semibold leading-tight text-left">Pensado para<br>niños y jóvenes</span>
                     </div>
-                    <div class="ml-4 w-16 h-16 bg-white rounded-full flex items-center justify-center border-4 border-yellow-400 transform translate-y-2 shadow-lg">
-                        <span class="text-3xl transform -translate-y-1">👍</span>
+                    <div class="ml-2 sm:ml-4 w-10 h-10 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center border-4 border-yellow-400 transform sm:translate-y-2 shadow-lg shrink-0">
+                        <span class="text-xl sm:text-3xl transform sm:-translate-y-1">👍</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ================= VISTA 2: CONSTRUCTOR INTELIGENTE ================= -->
-        <div id="view-inicio" class="hidden fade-in h-full flex flex-col bg-room relative overflow-hidden">
+        <div id="view-inicio" class="hidden fade-in h-full flex flex-col bg-room relative overflow-x-hidden overflow-y-auto lg:overflow-hidden w-full">
             
             <!-- Barra Superior Tipo Proyector/Aire -->
-            <div class="absolute top-0 left-0 w-[400px] bg-white shadow-md rounded-br-2xl flex items-center divide-x divide-gray-300 z-10 border-b-4 border-gray-200">
-                <button class="px-4 py-2 font-bold text-red-600 hover:bg-gray-50 transition-colors">Menu Principal</button>
-                <button class="px-4 py-2 font-bold text-red-500 hover:bg-gray-50 transition-colors">Menu Anterior</button>
+            <div class="absolute top-0 left-0 w-full sm:w-[400px] bg-white shadow-md rounded-b-2xl sm:rounded-bl-none sm:rounded-br-2xl flex items-center justify-between sm:justify-start divide-x divide-gray-300 z-20 border-b-4 border-gray-200">
+                <button onclick="toggleSidebar()" class="lg:hidden px-4 py-3 text-ikids-sidebar hover:bg-gray-50"><i class="fa-solid fa-bars text-xl"></i></button>
+                <button class="px-3 sm:px-4 py-3 font-bold text-red-600 hover:bg-gray-50 transition-colors text-xs sm:text-sm flex-1 sm:flex-none text-center">Menu Principal</button>
+                <button class="px-3 sm:px-4 py-3 font-bold text-red-500 hover:bg-gray-50 transition-colors text-xs sm:text-sm flex-1 sm:flex-none text-center">Menu Anterior</button>
             </div>
             
             <!-- Iluminación del Proyector -->
-            <div class="absolute top-0 right-[20%] w-[600px] h-full bg-white/20 blur-3xl transform rotate-12 origin-top-right pointer-events-none"></div>
+            <div class="absolute top-0 right-[20%] w-[600px] h-full bg-white/30 blur-3xl transform rotate-12 origin-top-right pointer-events-none z-0 hidden lg:block"></div>
 
-            <div class="flex-1 flex w-full relative z-10 p-10 pt-20">
+            <div class="flex-1 flex flex-col xl:flex-row w-full relative z-10 p-4 sm:p-10 pt-20 sm:pt-24 lg:pt-20 gap-8 lg:gap-0 h-full overflow-y-auto hide-scroll">
+                
                 <!-- Izquierda: Formulario y Botones -->
-                <div class="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto text-center px-8 relative">
+                <div class="flex-1 flex flex-col items-center xl:justify-center max-w-4xl mx-auto text-center px-2 sm:px-8 relative w-full mt-4 lg:mt-0">
                     
-                    <h2 class="text-5xl font-extrabold text-ikids-sidebar mb-1 bg-white/60 px-6 py-2 rounded-full inline-block shadow-sm backdrop-blur-sm border border-white">Constructor Inteligente</h2>
-                    <div class="w-64 h-0.5 bg-ikids-sidebar mx-auto mb-2"></div>
-                    <p class="text-ikids-text font-semibold text-lg mb-8 uppercase tracking-widest bg-white/60 px-4 py-1 rounded-full inline-block backdrop-blur-sm">de Salas Temáticas</p>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ikids-sidebar mb-1 bg-white/80 px-4 sm:px-6 py-2 rounded-full inline-block shadow-sm backdrop-blur-sm border border-white leading-tight mt-2 lg:mt-0">Constructor Inteligente</h2>
+                    <div class="w-40 sm:w-64 h-0.5 bg-ikids-sidebar mx-auto mb-2"></div>
+                    <p class="text-ikids-text font-semibold text-sm sm:text-lg mb-6 lg:mb-8 uppercase tracking-widest bg-white/80 px-4 py-1 rounded-full inline-block backdrop-blur-sm">de Salas Temáticas</p>
 
-                    <p class="text-white font-bold text-xl mb-4 drop-shadow-md">Tema seleccionado:</p>
+                    <p class="text-white font-bold text-lg sm:text-xl mb-3 sm:mb-4 drop-shadow-md">Tema seleccionado:</p>
                     
                     <!-- Input de búsqueda -->
                     <div class="w-full max-w-2xl relative shadow-2xl rounded-2xl bg-white border-4 border-ikids-purpleLight/30 transform hover:scale-[1.02] transition-transform">
-                        <input type="text" class="w-full text-center py-5 px-16 text-2xl font-bold text-ikids-purple placeholder-ikids-purple/50 focus:outline-none rounded-xl" placeholder="Escribe aquí el tema...">
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-ikids-sidebar text-white rounded-lg flex items-center justify-center text-xl shadow-md cursor-pointer hover:bg-ikids-purple transition-colors">
+                        <input type="text" class="w-full text-center py-4 sm:py-5 px-4 sm:px-16 text-lg sm:text-2xl font-bold text-ikids-purple placeholder-ikids-purple/50 focus:outline-none rounded-xl" placeholder="Escribe aquí el tema...">
+                        <div class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-ikids-sidebar text-white rounded-lg flex items-center justify-center text-lg sm:text-xl shadow-md cursor-pointer hover:bg-ikids-purple transition-colors hidden sm:flex">
                             <i class="fa-solid fa-head-side-virus"></i>
                         </div>
                     </div>
 
                     <!-- Botones Grandes -->
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-12 w-full max-w-4xl">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mt-8 lg:mt-12 w-full max-w-4xl">
                         <!-- Btn 1 -->
-                        <div onclick="switchView('videos')" class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-ikids-purple group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-ikids-purple flex items-center justify-center text-ikids-purple text-2xl group-hover:bg-ikids-purple group-hover:text-white transition-colors"><i class="fa-solid fa-play"></i></div>
-                            <span class="font-bold text-ikids-purple text-xs">Videos</span>
+                        <div onclick="switchView('videos')" class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-ikids-purple group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-ikids-purple flex items-center justify-center text-ikids-purple text-xl sm:text-2xl group-hover:bg-ikids-purple group-hover:text-white transition-colors"><i class="fa-solid fa-play"></i></div>
+                            <span class="font-bold text-ikids-purple text-[10px] sm:text-xs">Videos</span>
                         </div>
                         <!-- Btn 2 -->
-                        <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-blue-500 group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-blue-500 flex items-center justify-center text-blue-500 text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fa-regular fa-file-pdf"></i></div>
-                            <span class="font-bold text-blue-500 text-xs">Documentos</span>
+                        <div class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-blue-500 group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-blue-500 flex items-center justify-center text-blue-500 text-xl sm:text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fa-regular fa-file-pdf"></i></div>
+                            <span class="font-bold text-blue-500 text-[10px] sm:text-xs">Documentos</span>
                         </div>
                         <!-- Btn 3 -->
-                        <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-teal-500 group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-teal-500 flex items-center justify-center text-teal-500 text-2xl group-hover:bg-teal-500 group-hover:text-white transition-colors"><i class="fa-solid fa-chalkboard-user"></i></div>
-                            <span class="font-bold text-teal-500 text-xs">Presentaciones</span>
+                        <div class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-teal-500 group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-teal-500 flex items-center justify-center text-teal-500 text-xl sm:text-2xl group-hover:bg-teal-500 group-hover:text-white transition-colors"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            <span class="font-bold text-teal-500 text-[10px] sm:text-xs">Presentaciones</span>
                         </div>
                         <!-- Btn 4 -->
-                        <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-green-600 group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-green-600 flex items-center justify-center text-green-600 text-2xl group-hover:bg-green-600 group-hover:text-white transition-colors"><i class="fa-solid fa-clipboard-list"></i></div>
-                            <span class="font-bold text-green-600 text-xs">Actividades</span>
+                        <div class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-green-600 group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-green-600 flex items-center justify-center text-green-600 text-xl sm:text-2xl group-hover:bg-green-600 group-hover:text-white transition-colors"><i class="fa-solid fa-clipboard-list"></i></div>
+                            <span class="font-bold text-green-600 text-[10px] sm:text-xs">Actividades</span>
                         </div>
                         <!-- Btn 5 -->
-                        <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-orange-500 group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-orange-500 flex items-center justify-center text-orange-500 text-2xl group-hover:bg-orange-500 group-hover:text-white transition-colors"><i class="fa-solid fa-file-signature"></i></div>
-                            <span class="font-bold text-orange-500 text-xs">Evaluación</span>
+                        <div class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-orange-500 group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-orange-500 flex items-center justify-center text-orange-500 text-xl sm:text-2xl group-hover:bg-orange-500 group-hover:text-white transition-colors"><i class="fa-solid fa-file-signature"></i></div>
+                            <span class="font-bold text-orange-500 text-[10px] sm:text-xs">Evaluación</span>
                         </div>
                         <!-- Btn 6 -->
-                        <div class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-2 transition-transform border-b-4 border-red-500 group">
-                            <div class="w-14 h-14 rounded-xl border-2 border-red-500 flex items-center justify-center text-red-500 text-2xl group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fa-solid fa-hand-holding-heart"></i></div>
-                            <span class="font-bold text-red-500 text-xs">Recursos<br>de ayuda</span>
+                        <div class="bg-white rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center gap-2 cursor-pointer shadow-[0_10px_20px_rgba(0,0,0,0.1)] border border-gray-100 hover:-translate-y-1 sm:hover:-translate-y-2 transition-transform border-b-4 border-red-500 group">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-red-500 flex items-center justify-center text-red-500 text-xl sm:text-2xl group-hover:bg-red-500 group-hover:text-white transition-colors"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                            <span class="font-bold text-red-500 text-[10px] sm:text-xs leading-tight text-center">Recursos<br>ayuda</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Derecha: Pizarra Interactiva -->
-                <div class="w-[450px] shrink-0 relative flex flex-col justify-center">
-                    <div class="bg-white border-[12px] border-gray-200 shadow-2xl rounded-lg h-[350px] flex flex-col items-center justify-center relative bg-gradient-to-br from-white to-gray-50">
-                        <div class="absolute top-2 right-4 text-red-500 font-bold text-lg rotate-3 opacity-80 font-mono">Videoteca Educativa</div>
+                <div class="w-full xl:w-[450px] shrink-0 relative flex flex-col justify-center mt-8 xl:mt-0 pb-10 xl:pb-0 z-20">
+                    <div class="bg-white border-8 sm:border-[12px] border-gray-200 shadow-2xl rounded-lg h-[250px] sm:h-[350px] flex flex-col items-center justify-center relative bg-gradient-to-br from-white to-gray-50 mx-4 xl:mx-0">
+                        <div class="absolute top-2 right-2 sm:right-4 text-red-500 font-bold text-sm sm:text-lg rotate-3 opacity-80 font-mono text-center leading-tight">Videoteca<br class="sm:hidden">Educativa</div>
                         <div class="flex items-center justify-center gap-2 mb-2">
-                            <h2 class="text-5xl font-black text-ikids-sidebar">SEI<span class="text-blue-500">Λ</span></h2>
-                            <i class="fa-solid fa-brain text-5xl text-purple-400"></i>
+                            <h2 class="text-4xl sm:text-5xl font-black text-ikids-sidebar">SEI<span class="text-blue-500">Λ</span></h2>
+                            <i class="fa-solid fa-brain text-4xl sm:text-5xl text-purple-400"></i>
                         </div>
-                        <p class="text-blue-500 font-bold text-2xl mb-2">360</p>
-                        <p class="text-gray-500 font-medium">Tecnología con Propósito</p>
+                        <p class="text-blue-500 font-bold text-xl sm:text-2xl mb-2">360</p>
+                        <p class="text-gray-500 font-medium text-sm sm:text-base">Tecnología con Propósito</p>
                     </div>
 
                     <!-- Shelf de apps simulado -->
-                    <div class="w-full h-4 bg-[#b48c66] mt-4 shadow-xl border-b-4 border-[#8c6746] rounded flex items-end justify-end px-8 gap-4 relative">
-                        <div class="w-12 h-12 bg-green-600 rounded flex items-center justify-center text-white font-bold text-2xl shadow-lg absolute -top-8 right-32 transform -rotate-6">X</div>
-                        <div class="w-12 h-12 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-2xl shadow-lg absolute -top-10 right-16">W</div>
-                        <div class="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg absolute -top-6 right-2 transform rotate-12">P</div>
+                    <div class="w-[90%] sm:w-full mx-auto h-3 sm:h-4 bg-[#b48c66] mt-4 shadow-xl border-b-4 border-[#8c6746] rounded flex items-end justify-end px-4 sm:px-8 gap-2 sm:gap-4 relative">
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 bg-green-600 rounded flex items-center justify-center text-white font-bold text-lg sm:text-2xl shadow-lg absolute -top-6 sm:-top-8 right-24 sm:right-32 transform -rotate-6">X</div>
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-lg sm:text-2xl shadow-lg absolute -top-8 sm:-top-10 right-12 sm:right-16">W</div>
+                        <div class="w-8 h-8 sm:w-12 sm:h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-2xl shadow-lg absolute -top-5 sm:-top-6 right-2 transform rotate-12">P</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Footer Informativo Constructor -->
-            <div class="mt-auto bg-ikids-sidebar text-white p-3 flex items-center justify-between z-10 text-xs relative overflow-hidden">
-                <div class="flex items-center gap-8 pl-4">
-                    <span class="text-gray-300">Rol actual:</span>
-                    <button class="bg-white text-ikids-sidebar px-4 py-1.5 rounded-full font-bold shadow-md flex items-center gap-2">
-                        <i class="fa-regular fa-user"></i> Facilitador
-                    </button>
-                    <button class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors"><i class="fa-solid fa-shield-halved"></i> Administrador</button>
-                    <button class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors"><i class="fa-regular fa-user"></i> Usuario</button>
-                </div>
-                
-                <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-4 bg-ikids-purple/50 px-6 py-2 rounded-full border border-white/10 backdrop-blur-md">
-                    <i class="fa-solid fa-brain text-2xl"></i>
-                    <p class="text-center text-[11px] font-medium leading-tight">Convierte cualquier tema en una experiencia educativa interactiva,<br>organizada y lista para implementar en los CETs.</p>
-                </div>
-
-                <div class="flex items-center gap-6 pr-4">
-                    <button class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors"><i class="fa-solid fa-universal-access"></i> Accesibilidad</button>
-                    <button class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors"><i class="fa-solid fa-microphone"></i> Jarvis SEIA</button>
-                    <button class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors"><i class="fa-regular fa-circle-question"></i> Ayuda</button>
-                </div>
-            </div>
-            
-            <!-- Elementos decorativos de la habitación -->
-            <div class="absolute bottom-16 left-10 w-48 h-32 bg-teal-700/80 rounded-t-lg backdrop-blur-md border border-teal-600/50 shadow-2xl z-0"></div> <!-- Sofá simulación -->
-            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center z-0">
+            <!-- Elementos decorativos de la habitación (Ocultos en móvil para no estorbar) -->
+            <div class="hidden lg:block absolute bottom-16 left-10 w-48 h-32 bg-teal-700/80 rounded-t-lg backdrop-blur-md border border-teal-600/50 shadow-2xl z-0 pointer-events-none"></div> <!-- Sofá simulación -->
+            <div class="hidden lg:flex absolute bottom-12 left-1/3 flex-col items-center z-0 pointer-events-none">
                 <div class="w-32 h-6 bg-[#d2b48c] border-2 border-[#8b4513] rounded shadow-xl transform rotate-3 z-10"></div>
                 <div class="w-32 h-6 bg-[#f5deb3] border-2 border-[#8b4513] rounded shadow-xl transform -rotate-2 -mt-2 z-20"></div>
                 <div class="w-32 h-6 bg-[#d2b48c] border-2 border-[#8b4513] rounded shadow-xl transform rotate-1 -mt-2 z-30"></div>
             </div> <!-- Libros -->
-            <div class="absolute bottom-16 right-10 w-32 h-20 bg-gray-200 rounded-t-xl border-4 border-gray-300 shadow-2xl z-0 flex items-center justify-center overflow-hidden">
+            <div class="hidden lg:flex absolute bottom-16 right-10 w-32 h-20 bg-gray-200 rounded-t-xl border-4 border-gray-300 shadow-2xl z-0 items-center justify-center overflow-hidden pointer-events-none">
                 <div class="w-full h-full bg-green-500 font-bold text-white flex items-center justify-center text-xl">INTERNET</div>
             </div> <!-- Tablet -->
+
+            <!-- Footer Informativo Constructor -->
+            <div class="mt-auto bg-ikids-sidebar text-white p-3 lg:p-3 flex flex-col md:flex-row items-center justify-between z-30 text-xs relative overflow-hidden shrink-0 gap-4 md:gap-0">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-4 lg:gap-8 px-2 w-full md:w-auto">
+                    <span class="text-gray-300 hidden sm:inline">Rol actual:</span>
+                    <button class="bg-white text-ikids-sidebar px-3 sm:px-4 py-1 sm:py-1.5 rounded-full font-bold shadow-md flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
+                        <i class="fa-regular fa-user"></i> Facilitador
+                    </button>
+                    <button class="text-gray-300 hover:text-white flex items-center gap-1.5 sm:gap-2 transition-colors text-[10px] sm:text-xs"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+                    <button class="text-gray-300 hover:text-white flex items-center gap-1.5 sm:gap-2 transition-colors text-[10px] sm:text-xs"><i class="fa-regular fa-user"></i> Usuario</button>
+                </div>
+                
+                <div class="md:absolute left-1/2 md:-translate-x-1/2 flex items-center gap-3 sm:gap-4 bg-ikids-purple/80 md:bg-ikids-purple/50 px-4 sm:px-6 py-2 rounded-xl sm:rounded-full border border-white/20 md:border-white/10 backdrop-blur-md w-full md:w-auto mx-2 md:mx-0 justify-center">
+                    <i class="fa-solid fa-brain text-xl sm:text-2xl shrink-0"></i>
+                    <p class="text-center text-[9px] sm:text-[11px] font-medium leading-tight">Convierte cualquier tema en una experiencia educativa<br class="hidden sm:block"> interactiva lista para los CETs.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center md:justify-end gap-4 lg:gap-6 px-2 w-full md:w-auto pb-2 md:pb-0 border-t border-white/10 md:border-none pt-2 md:pt-0">
+                    <button class="text-gray-300 hover:text-white flex items-center gap-1.5 sm:gap-2 transition-colors text-[10px] sm:text-xs"><i class="fa-solid fa-universal-access"></i> Accesibilidad</button>
+                    <button class="text-gray-300 hover:text-white flex items-center gap-1.5 sm:gap-2 transition-colors text-[10px] sm:text-xs"><i class="fa-solid fa-microphone"></i> Jarvis SEIA</button>
+                    <button class="text-gray-300 hover:text-white flex items-center gap-1.5 sm:gap-2 transition-colors text-[10px] sm:text-xs"><i class="fa-regular fa-circle-question"></i> Ayuda</button>
+                </div>
+            </div>
+            
         </div>
 
     </main>
@@ -500,7 +520,7 @@
                 colorBadge: "text-purple-600 bg-purple-100 border-purple-200",
                 duration: "07:45",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=400&q=80" // Niño con escudo simulado
+                image: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 2,
@@ -509,7 +529,7 @@
                 colorBadge: "text-pink-600 bg-pink-100 border-pink-200",
                 duration: "06:20",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=400&q=80" // Alcancía cerdito
+                image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 3,
@@ -518,7 +538,7 @@
                 colorBadge: "text-green-600 bg-green-100 border-green-200",
                 duration: "05:50",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80" // Espacio/Planeta
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 4,
@@ -527,7 +547,7 @@
                 colorBadge: "text-orange-600 bg-orange-100 border-orange-200",
                 duration: "06:15",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80" // Niños chocando manos
+                image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 5,
@@ -535,8 +555,8 @@
                 category: "Robótica",
                 colorBadge: "text-blue-600 bg-blue-100 border-blue-200",
                 duration: "09:10",
-                isOffline: false, // ONLINE
-                image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&q=80" // Robot
+                isOffline: false,
+                image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 6,
@@ -545,7 +565,7 @@
                 colorBadge: "text-red-600 bg-red-100 border-red-200",
                 duration: "04:30",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80" // Ejercicio/Niña
+                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 7,
@@ -554,7 +574,7 @@
                 colorBadge: "text-purple-600 bg-purple-100 border-purple-200",
                 duration: "07:35",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=400&q=80" // Laptop cuidado
+                image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 8,
@@ -563,7 +583,7 @@
                 colorBadge: "text-pink-600 bg-pink-100 border-pink-200",
                 duration: "06:40",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80" // Monedas/Cálculo
+                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 9,
@@ -572,7 +592,7 @@
                 colorBadge: "text-green-600 bg-green-100 border-green-200",
                 duration: "05:25",
                 isOffline: true,
-                image: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=400&q=80" // Planta/Tierra
+                image: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=400&q=80"
             },
             {
                 id: 10,
@@ -580,8 +600,8 @@
                 category: "Robótica",
                 colorBadge: "text-blue-600 bg-blue-100 border-blue-200",
                 duration: "08:50",
-                isOffline: false, // ONLINE
-                image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=400&q=80" // Código/Computadora
+                isOffline: false,
+                image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=400&q=80"
             }
         ];
 
@@ -591,36 +611,36 @@
             grid.innerHTML = '';
 
             if(videos.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-500"><i class="fa-regular fa-face-frown text-4xl mb-3"></i><p class="font-bold">No se encontraron videos para este filtro.</p></div>`;
+                grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-500"><i class="fa-regular fa-face-frown text-4xl mb-3"></i><p class="font-bold text-sm sm:text-base mt-2">No se encontraron videos para este filtro.</p></div>`;
                 return;
             }
 
             videos.forEach(video => {
                 const statusBadge = video.isOffline 
-                    ? `<span class="absolute top-2 left-2 bg-ikids-green text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md flex items-center gap-1"><i class="fa-solid fa-cloud-arrow-down"></i> OFFLINE</span>`
-                    : `<span class="absolute top-2 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md flex items-center gap-1"><i class="fa-solid fa-wifi"></i> ONLINE</span>`;
+                    ? `<span class="absolute top-2 left-2 bg-ikids-green text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md shadow-md flex items-center gap-1"><i class="fa-solid fa-cloud-arrow-down"></i> OFFLINE</span>`
+                    : `<span class="absolute top-2 left-2 bg-blue-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md shadow-md flex items-center gap-1"><i class="fa-solid fa-wifi"></i> ONLINE</span>`;
 
                 const cardHTML = `
-                    <div class="bg-white border border-gray-100 rounded-[20px] shadow-sm hover:shadow-xl transition-all group overflow-hidden flex flex-col h-full transform hover:-translate-y-1">
+                    <div class="bg-white border border-gray-100 rounded-2xl sm:rounded-[20px] shadow-sm hover:shadow-xl transition-all group overflow-hidden flex flex-col h-full transform hover:-translate-y-1 w-full">
                         <!-- Imagen Cover -->
-                        <div class="relative h-[140px] w-full overflow-hidden bg-gray-100 p-2">
+                        <div class="relative h-[120px] sm:h-[140px] w-full overflow-hidden bg-gray-100 p-2">
                             <div class="w-full h-full rounded-xl overflow-hidden relative">
                                 <img src="${video.image}" alt="${video.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 ${statusBadge}
                                 <!-- Overlay Duration -->
-                                <span class="absolute bottom-2 right-2 bg-ikids-sidebar/80 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-md">${video.duration}</span>
+                                <span class="absolute bottom-1.5 sm:bottom-2 right-1.5 sm:right-2 bg-ikids-sidebar/80 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md">${video.duration}</span>
                             </div>
                         </div>
 
                         <!-- Content -->
-                        <div class="p-4 pt-3 flex flex-col flex-1">
-                            <h3 class="font-bold text-ikids-text text-[14px] leading-snug mb-3 line-clamp-2">${video.title}</h3>
+                        <div class="p-3 sm:p-4 pt-2 sm:pt-3 flex flex-col flex-1">
+                            <h3 class="font-bold text-ikids-text text-[12px] sm:text-[14px] leading-snug mb-2 sm:mb-3 line-clamp-2">${video.title}</h3>
                             
                             <div class="flex items-center justify-between mt-auto">
-                                <span class="text-[11px] font-bold px-3 py-1 rounded-full border ${video.colorBadge}">
+                                <span class="text-[9px] sm:text-[11px] font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border ${video.colorBadge}">
                                     ${video.category}
                                 </span>
-                                <button class="text-gray-300 hover:text-red-500 transition-colors text-lg focus:outline-none">
+                                <button class="text-gray-300 hover:text-red-500 transition-colors text-base sm:text-lg focus:outline-none shrink-0 ml-2">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>
                             </div>
@@ -629,6 +649,24 @@
                 `;
                 grid.innerHTML += cardHTML;
             });
+        }
+
+        // --- SISTEMA DE SIDEBAR MÓVIL ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('main-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // Abrir
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                // Cerrar
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
         }
 
         // --- SISTEMA DE NAVEGACIÓN ENTRE VISTAS ---
@@ -696,7 +734,6 @@
         // Inicializar
         window.onload = () => {
             renderVideos(videosData);
-            // Inicia en la vista de videos por requerimiento principal
             switchView('videos'); 
         };
     </script>
